@@ -49,12 +49,14 @@
     -webkit-tap-highlight-color: transparent;
   }
   body.locked { overflow: hidden; }
+  body.locked main, body.locked .footer { visibility: hidden; }
   img { display: block; max-width: 100%; }
   button { font: inherit; color: inherit; }
   button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
 
   /* ---------- Fon: gradient, yulduzlar, suzuvchi 3D yuraklar ---------- */
-  .backdrop, .stars, .floaters { position: fixed; inset: 0; pointer-events: none; }
+  /* 100vh telefonda manzil satri yashirilganda o'zgarmaydi — fon qayta chizilmaydi */
+  .backdrop, .stars, .floaters { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; }
   .backdrop {
     z-index: 0;
     background:
@@ -64,31 +66,25 @@
       linear-gradient(180deg, var(--plum) 0%, var(--night) 55%, #0b0313 100%);
   }
   .stars { z-index: 0; overflow: hidden; }
-  .star {
-    position: absolute;
-    border-radius: 50%;
-    background: #fff;
-    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+  .star { position: absolute; border-radius: 50%; background: #fff; opacity: var(--a); }
+  .star.tw {
+    background: radial-gradient(circle, #fff 0 30%, rgba(255, 255, 255, 0.35) 55%, transparent 70%);
     animation: twinkle var(--d) ease-in-out var(--delay) infinite;
   }
-  @keyframes twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.95; } }
+  @keyframes twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 1; } }
 
   .floaters { z-index: 1; overflow: hidden; }
   .floaters.top { z-index: 40; }
+  /* Ko'tarilish (translate) va aylanish (transform) bitta elementda — har yurakka bitta GPU qatlami */
   .floater {
     position: absolute;
     bottom: -100px;
     width: var(--size);
     height: var(--size);
     opacity: var(--o);
-    animation: rise var(--dur) linear var(--delay) infinite;
-    will-change: transform;
+    animation: rise var(--dur) linear var(--delay) infinite, wobble var(--spin) ease-in-out infinite alternate;
   }
-  .floater img { width: 100%; height: 100%; animation: wobble var(--spin) ease-in-out infinite alternate; }
-  @keyframes rise {
-    from { transform: translate3d(0, 0, 0); }
-    to { transform: translate3d(var(--drift), -125vh, 0); }
-  }
+  @keyframes rise { to { translate: var(--drift) -125vh; } }
   @keyframes wobble {
     from { transform: perspective(400px) rotateY(-40deg) rotateZ(-10deg); }
     to { transform: perspective(400px) rotateY(40deg) rotateZ(10deg); }
@@ -106,9 +102,8 @@
     gap: 6px;
     padding: 24px 16px;
     text-align: center;
-    background: radial-gradient(circle at 50% 42%, rgba(80, 14, 66, 0.72), rgba(12, 3, 20, 0.94) 72%);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: radial-gradient(circle at 50% 42%, rgba(80, 14, 66, 0.8), rgba(12, 3, 20, 0.95) 72%);
+    touch-action: none;
     transition: opacity 0.9s ease 0.15s, visibility 0s linear 1.05s;
   }
   .gate.open { opacity: 0; visibility: hidden; }
@@ -148,10 +143,20 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease;
   }
   .btn:hover { transform: translateY(-2px) scale(1.04); }
-  .pulse { animation: ring 2s ease-out infinite; }
+  .pulse { position: relative; }
+  .pulse::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border: 2px solid rgba(255, 79, 163, 0.75);
+    border-radius: inherit;
+    opacity: 0;
+    pointer-events: none;
+    animation: ring 2s ease-out infinite;
+  }
   @keyframes ring {
-    0% { box-shadow: 0 12px 30px rgba(255, 46, 126, 0.45), 0 0 0 0 rgba(255, 79, 163, 0.6); }
-    100% { box-shadow: 0 12px 30px rgba(255, 46, 126, 0.45), 0 0 0 22px rgba(255, 79, 163, 0); }
+    from { transform: scale(1); opacity: 0.9; }
+    to { transform: scale(1.25, 1.7); opacity: 0; }
   }
 
   /* ---------- Bosh qism: 3D yurak va neon ism ---------- */
@@ -172,8 +177,6 @@
     aspect-ratio: 1;
     margin-bottom: -6px;
     cursor: pointer;
-    -webkit-mask-image: radial-gradient(closest-side, #000 82%, transparent);
-    mask-image: radial-gradient(closest-side, #000 82%, transparent);
   }
   .heart-stage canvas {
     position: absolute;
@@ -190,9 +193,8 @@
     width: 68%;
     height: 68%;
     animation: beat 1.3s ease-in-out infinite;
-    transition: opacity 0.8s ease;
   }
-  .heart-stage.ready .heart-fallback { opacity: 0; }
+  .heart-stage.ready .heart-fallback { display: none; }
   @keyframes beat {
     0%, 40%, 100% { transform: scale(1); }
     12% { transform: scale(1.09); }
@@ -207,6 +209,7 @@
     color: var(--rose);
   }
   .neon {
+    position: relative;
     margin: 0 0 6px;
     padding: 0 0.12em;
     font-family: "Great Vibes", cursive;
@@ -214,12 +217,24 @@
     font-size: clamp(4rem, 18vw, 8.5rem);
     line-height: 1.12;
     color: #fff6fb;
-    text-shadow: var(--neon);
+    text-shadow: 0 0 2px #fff, 0 0 8px #ffd3ea, 0 0 18px var(--pink);
     opacity: 0.1;
     overflow-wrap: anywhere;
     outline: none;
   }
-  body.lit .neon { animation: neon-on 1.9s linear 0.25s forwards, neon-hum 3.4s ease-in-out 2.4s infinite; }
+  /* Tashqi nur alohida qatlamda: "nafas olishi" faqat opacity bilan ishlaydi */
+  .neon::after {
+    content: attr(data-text);
+    content: attr(data-text) / "";
+    position: absolute;
+    inset: 0;
+    padding: inherit;
+    color: transparent;
+    text-shadow: 0 0 34px var(--pink), 0 0 60px var(--hot), 0 0 96px var(--hot);
+    pointer-events: none;
+  }
+  body.lit .neon { animation: neon-on 1.9s linear 0.25s forwards; }
+  body.lit .neon::after { animation: neon-hum 3.4s ease-in-out 2.4s infinite; }
   @keyframes neon-on {
     0% { opacity: 0.1; }
     6% { opacity: 1; }
@@ -228,10 +243,7 @@
     21% { opacity: 0.4; }
     30%, 100% { opacity: 1; }
   }
-  @keyframes neon-hum {
-    0%, 100% { opacity: 1; filter: brightness(1); }
-    50% { opacity: 1; filter: brightness(1.3) saturate(1.15); }
-  }
+  @keyframes neon-hum { 50% { opacity: 0.45; } }
   .tagline {
     max-width: 32ch;
     margin: 4px auto 28px;
@@ -584,7 +596,7 @@
 <div class="floaters top" id="burst" aria-hidden="true"></div>
 
 <div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
-  <img class="gate-letter" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/Love%20letter/3D/love_letter_3d.png" alt="" width="256" height="256">
+  <img class="gate-letter" fetchpriority="high" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/Love%20letter/3D/love_letter_3d.png" alt="" width="256" height="256">
   <h2 class="gate-title" id="gate-title">Senga xat bor</h2>
   <p class="gate-sub">Faqat sen uchun yozilgan... 🤫</p>
   <button class="btn pulse" id="open-btn" type="button">Ochish 💌</button>
@@ -605,7 +617,7 @@
     <h2 class="title reveal">Senga maktubim</h2>
     <p class="subtitle reveal">Har bir so'zi — yuragimdan 💌</p>
     <article class="letter reveal" id="letter">
-      <img class="letter-photo" id="letter-photo" alt="Qizil atirgullar" loading="lazy">
+      <img class="letter-photo" id="letter-photo" alt="Qizil atirgullar" loading="lazy" decoding="async">
       <div class="letter-paper">
         <p class="letter-text"><span class="ghost" id="letter-ghost"></span><span class="typed" id="letter-typed" aria-hidden="true"></span></p>
         <p class="sign">Faqat seniki <img data-e="kiss" alt="" loading="lazy"></p>
@@ -726,12 +738,12 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
 
   // Fotolarni o'zlaringizning suratlaringiz havolasiga almashtirsangiz ham bo'ladi
   const ORZULAR = [
-    { rasm: pexels(20183378, 700, 700), matn: "Quyosh botganda qo'lingni ushlab turish 🌅" },
-    { rasm: pexels(12703064, 700, 700), matn: "Har tong sen bilan bir piyola qahva ☕" },
-    { rasm: pexels(5933360, 700, 700), matn: "Yomg'irda bitta soyabon ostida 🌧️" },
-    { rasm: pexels(9584940, 700, 700), matn: "Bahorda gullar orasida piknik 🧺" },
-    { rasm: pexels(11736477, 700, 700), matn: "Yulduzlar ostida tong otguncha suhbat ✨" },
-    { rasm: pexels(18156055, 700, 700), matn: "Parijda, Eyfel minorasi yonida raqs 🗼" },
+    { rasm: pexels(20183378, 600, 600), matn: "Quyosh botganda qo'lingni ushlab turish 🌅" },
+    { rasm: pexels(12703064, 600, 600), matn: "Har tong sen bilan bir piyola qahva ☕" },
+    { rasm: pexels(5933360, 600, 600), matn: "Yomg'irda bitta soyabon ostida 🌧️" },
+    { rasm: pexels(9584940, 600, 600), matn: "Bahorda gullar orasida piknik 🧺" },
+    { rasm: pexels(11736477, 600, 600), matn: "Yulduzlar ostida tong otguncha suhbat ✨" },
+    { rasm: pexels(18156055, 600, 600), matn: "Parijda, Eyfel minorasi yonida raqs 🗼" },
   ];
 
   const FAKTLAR = [
@@ -797,6 +809,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
   ];
 
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const LITE = matchMedia("(max-width: 600px), (pointer: coarse)").matches;
   const PALETTE = ["#ff2e7e", "#ff4fa3", "#ff86b4", "#ffd27a", "#a46bff", "#ffffff"];
   const el = (tag, cls) => {
     const node = document.createElement(tag);
@@ -805,24 +818,31 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
   };
 
   document.querySelectorAll(".her-name").forEach((node) => { node.textContent = ISMI; });
+  document.getElementById("her-name").dataset.text = ISMI;
   document.title = `${ISMI} uchun 💖`;
-  document.querySelectorAll("img[data-e]").forEach((img) => { img.src = em(img.dataset.e); });
+  document.querySelectorAll("img[data-e]").forEach((img) => {
+    img.decoding = "async";
+    img.src = em(img.dataset.e);
+  });
   document.getElementById("letter-photo").src = pexels(196664, 1200, 520);
 
-  // --- Yulduzlar va suzuvchi 3D yuraklar ---
+  // --- Yulduzlar (har to'rttasidan biri miltillaydi) va suzuvchi 3D yuraklar ---
   const starsEl = document.getElementById("stars");
-  for (let i = 0; i < 70; i++) {
-    const s = el("i", "star");
-    const size = (1 + Math.random() * 2).toFixed(1);
-    s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;width:${size}px;height:${size}px;--d:${(2 + Math.random() * 4).toFixed(1)}s;--delay:${(-Math.random() * 6).toFixed(1)}s`;
+  for (let i = 0, n = LITE ? 44 : 64; i < n; i++) {
+    const twinkles = i % 4 === 0;
+    const s = el("i", twinkles ? "star tw" : "star");
+    const size = (twinkles ? 4 + Math.random() * 3 : 1 + Math.random() * 1.6).toFixed(1);
+    s.style.cssText = `left:${(Math.random() * 100).toFixed(2)}%;top:${(Math.random() * 100).toFixed(2)}%;width:${size}px;height:${size}px;--a:${(0.3 + Math.random() * 0.6).toFixed(2)};--d:${(2 + Math.random() * 4).toFixed(1)}s;--delay:${(-Math.random() * 6).toFixed(1)}s`;
     starsEl.append(s);
   }
 
   const FLOAT_KEYS = ["redHeart", "pinkHeart", "sparklingHeart", "ribbonHeart", "twoHearts", "revolvingHearts", "rose", "sparkles", "blossom", "growingHeart"];
   function spawnFloater(container, burst) {
-    const f = el("div", "floater");
+    const f = el("img", "floater");
     const size = (burst ? 36 : 24) + Math.random() * 44;
     const dur = burst ? 4.5 + Math.random() * 3 : 16 + Math.random() * 16;
+    f.alt = "";
+    f.decoding = "async";
     f.style.left = `${Math.random() * 94}vw`;
     f.style.setProperty("--size", `${size}px`);
     f.style.setProperty("--o", burst ? "1" : (0.28 + size / 150).toFixed(2));
@@ -831,18 +851,15 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     f.style.setProperty("--drift", `${Math.round(Math.random() * 140 - 70)}px`);
     f.style.setProperty("--spin", `${(2 + Math.random() * 3).toFixed(1)}s`);
     if (burst) {
-      f.style.animationIterationCount = "1";
-      f.addEventListener("animationend", () => f.remove());
+      f.style.animationIterationCount = "1, infinite";
+      f.addEventListener("animationend", (e) => { if (e.animationName === "rise") f.remove(); });
     }
-    const img = el("img");
-    img.alt = "";
-    img.src = em(FLOAT_KEYS[Math.floor(Math.random() * FLOAT_KEYS.length)]);
-    f.append(img);
+    f.src = em(FLOAT_KEYS[Math.floor(Math.random() * FLOAT_KEYS.length)]);
     container.append(f);
   }
   const floatersEl = document.getElementById("floaters");
   const burstEl = document.getElementById("burst");
-  for (let i = 0, n = innerWidth < 600 ? 10 : 16; i < n; i++) spawnFloater(floatersEl, false);
+  for (let i = 0, n = LITE ? 8 : 14; i < n; i++) spawnFloater(floatersEl, false);
 
   // --- Konfetti (canvas-confetti) ---
   let heartShape = null;
@@ -854,17 +871,19 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
   }
   function heartBurst(origin, count = 60) {
     if (!window.confetti) return;
-    confetti({ particleCount: count, spread: 75, startVelocity: 34, scalar: 1.3, ticks: 160, colors: PALETTE, shapes: confettiShapes(), origin, zIndex: 100, disableForReducedMotion: true });
+    confetti({ particleCount: Math.round(count * (LITE ? 0.6 : 1)), spread: 75, startVelocity: 34, scalar: 1.3, ticks: 160, colors: PALETTE, shapes: confettiShapes(), origin, zIndex: 100, disableForReducedMotion: true });
   }
   function celebrate() {
     if (!window.confetti) return;
-    const end = Date.now() + 3500;
     const shapes = confettiShapes();
-    (function side() {
-      confetti({ particleCount: 4, angle: 60, spread: 65, startVelocity: 55, origin: { x: 0, y: 0.75 }, colors: PALETTE, shapes, scalar: 1.4, zIndex: 100, disableForReducedMotion: true });
-      confetti({ particleCount: 4, angle: 120, spread: 65, startVelocity: 55, origin: { x: 1, y: 0.75 }, colors: PALETTE, shapes, scalar: 1.4, zIndex: 100, disableForReducedMotion: true });
-      if (Date.now() < end) requestAnimationFrame(side);
-    })();
+    const side = (x, angle) => confetti({ particleCount: LITE ? 4 : 7, angle, spread: 65, startVelocity: 55, origin: { x, y: 0.75 }, colors: PALETTE, shapes, scalar: 1.4, zIndex: 100, disableForReducedMotion: true });
+    let shots = 0;
+    const timer = setInterval(() => {
+      side(0, 60);
+      side(1, 120);
+      shots += 1;
+      if (shots >= 45) clearInterval(timer);
+    }, 70);
     setTimeout(() => heartBurst({ x: 0.5, y: 0.4 }, 150), 350);
   }
   function originOf(node) {
@@ -878,6 +897,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     gate.classList.add("open");
     document.body.classList.remove("locked");
     document.body.classList.add("lit");
+    window.dispatchEvent(new Event("gate-open"));
     heartBurst({ x: 0.5, y: 0.55 }, 90);
     setTimeout(() => {
       gate.remove();
@@ -895,24 +915,26 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
   const letterChars = Array.from(MAKTUB);
   let typingDone = false;
   function typeLetter() {
+    if (typingDone) return;
     if (calm) {
       typingDone = true;
       typed.textContent = MAKTUB;
       return;
     }
+    const text = document.createTextNode("");
     const caret = el("span", "caret");
+    typed.replaceChildren(text, caret);
     let i = 0;
     (function next() {
       if (typingDone) return;
+      const ch = letterChars[i];
       i += 1;
-      typed.textContent = letterChars.slice(0, i).join("");
-      typed.append(caret);
+      text.appendData(ch);
       if (i >= letterChars.length) {
         typingDone = true;
         setTimeout(() => caret.remove(), 2000);
         return;
       }
-      const ch = letterChars[i - 1];
       setTimeout(next, ch === "\n" ? 280 : ".,!?—".includes(ch) ? 200 : 26 + Math.random() * 34);
     })();
   }
@@ -938,6 +960,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     const front = el("span", "face front");
     const img = el("img");
     img.loading = "lazy";
+    img.decoding = "async";
     img.alt = "";
     img.src = em(r.e);
     const title = el("b");
@@ -967,8 +990,9 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     const fig = el("figure", "polaroid");
     const img = el("img");
     img.loading = "lazy";
-    img.width = 700;
-    img.height = 700;
+    img.decoding = "async";
+    img.width = 600;
+    img.height = 600;
     img.alt = d.matn;
     img.src = d.rasm;
     const cap = el("figcaption");
@@ -978,8 +1002,23 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     outer.append(wrap);
     dreamsEl.append(outer);
   });
+  // Tilt (giroskop bilan) faqat polaroidlar ekranda bo'lganda yoqiladi
   if (window.VanillaTilt) {
-    VanillaTilt.init(document.querySelectorAll(".polaroid"), { max: 14, speed: 500, scale: 1.05, perspective: 900, glare: true, "max-glare": 0.35 });
+    const polaroids = dreamsEl.querySelectorAll(".polaroid");
+    const tiltOptions = { max: 14, speed: 500, scale: 1.05, perspective: 900, glare: true, "max-glare": 0.35 };
+    let tiltActive = false;
+    let glareBuilt = false;
+    new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting === tiltActive) return;
+      tiltActive = entry.isIntersecting;
+      if (tiltActive) {
+        VanillaTilt.init(polaroids, { ...tiltOptions, "glare-prerender": glareBuilt });
+        if (glareBuilt) polaroids.forEach((p) => p.vanillaTilt.updateGlareSize());
+        glareBuilt = true;
+      } else {
+        polaroids.forEach((p) => p.vanillaTilt?.destroy());
+      }
+    }, { rootMargin: "120px 0px" }).observe(dreamsEl);
   }
 
   // --- Faktlar ---
@@ -989,6 +1028,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     card.style.setProperty("--rd", `${(i % 3) * 0.08}s`);
     const img = el("img");
     img.loading = "lazy";
+    img.decoding = "async";
     img.alt = "";
     img.src = em(f.e);
     const body = el("div");
@@ -1016,6 +1056,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     const ticket = el("span", "ticket");
     const img = el("img");
     img.loading = "lazy";
+    img.decoding = "async";
     img.alt = "";
     img.src = em(c.e);
     const name = el("span", "c-title");
@@ -1149,7 +1190,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     btnRow.hidden = true;
     result.hidden = false;
     celebrate();
-    for (let i = 0; i < 26; i++) setTimeout(() => spawnFloater(burstEl, true), i * 70);
+    for (let i = 0, n = LITE ? 12 : 22; i < n; i++) setTimeout(() => spawnFloater(burstEl, true), i * 80);
   }
 
   renderStep();
@@ -1188,17 +1229,20 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
 
   const stage = document.getElementById("heart-stage");
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const dpr = window.devicePixelRatio || 1;
 
   let renderer = null;
   try {
-    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+    // Zich ekranda (dpr ≥ 2) antialias deyarli ko'rinmaydi, lekin GPU'ni ancha yuklaydi
+    renderer = new THREE.WebGLRenderer({ antialias: dpr < 2, alpha: true });
   } catch (err) {
     console.warn("WebGL ishlamadi — PNG yurak ko'rsatiladi.", err);
   }
   if (renderer) start(renderer);
 
   function start(renderer) {
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    let pixelRatio = Math.min(dpr, 2);
+    renderer.setPixelRatio(pixelRatio);
     renderer.toneMapping = THREE.NeutralToneMapping;
     renderer.toneMappingExposure = 1.05;
     stage.append(renderer.domElement);
@@ -1223,29 +1267,23 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     pinkLight.position.set(3, -2, 3);
     scene.add(pinkLight);
 
-    const geo = heartGeometry();
-    const heart = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
+    const heart = new THREE.Mesh(heartGeometry(96, 72), new THREE.MeshPhysicalMaterial({
       color: 0xff0a4e,
       roughness: 0.28,
-      metalness: 0,
       clearcoat: 1,
       clearcoatRoughness: 0.05,
-      sheen: 0.25,
-      sheenColor: new THREE.Color(0xff6fae),
-      sheenRoughness: 0.5,
-      iridescence: 0.15,
-      iridescenceIOR: 1.3,
     }));
     scene.add(heart);
 
     const orbit = new THREE.Group();
     orbit.rotation.set(0.38, 0, -0.22);
     scene.add(orbit);
-    const gold = new THREE.MeshPhysicalMaterial({ color: 0xffc56e, metalness: 1, roughness: 0.22, clearcoat: 0.5 });
-    const blush = new THREE.MeshPhysicalMaterial({ color: 0xff8cc6, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 });
+    const miniGeo = heartGeometry(40, 30);
+    const gold = new THREE.MeshStandardMaterial({ color: 0xffc56e, metalness: 1, roughness: 0.22 });
+    const blush = new THREE.MeshStandardMaterial({ color: 0xff8cc6, roughness: 0.3 });
     const minis = [];
     for (let i = 0; i < 6; i++) {
-      const mini = new THREE.Mesh(geo, i % 2 ? gold : blush);
+      const mini = new THREE.Mesh(miniGeo, i % 2 ? gold : blush);
       const a = (i / 6) * Math.PI * 2;
       mini.scale.setScalar(0.22);
       mini.position.set(Math.cos(a) * 1.85, 0, Math.sin(a) * 1.85);
@@ -1256,7 +1294,7 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     const COUNT = 150;
     const positions = new Float32Array(COUNT * 3);
     for (let i = 0; i < COUNT; i++) {
-      const r = 1.5 + Math.random() * 0.75;
+      const r = 1.4 + Math.random() * 0.6;
       const th = Math.random() * Math.PI * 2;
       const ph = Math.acos(2 * Math.random() - 1);
       positions[i * 3] = r * Math.sin(ph) * Math.cos(th);
@@ -1294,6 +1332,8 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     let spinVel = 0;
     let last = performance.now();
     let firstFrame = true;
+    let sampled = 0;
+    let slowFrames = 0;
     window.addEventListener("pointermove", (e) => {
       tx = e.clientX / innerWidth - 0.5;
       ty = e.clientY / innerHeight - 0.5;
@@ -1301,8 +1341,20 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
     stage.addEventListener("click", () => { spinVel = 16; });
 
     function loop(now) {
-      const dt = Math.min((now - last) / 1000, 0.05);
+      const frame = (now - last) / 1000;
+      const dt = Math.min(frame, 0.05);
       last = now;
+
+      // Sekin telefon: birinchi 90 kadrning uchdan biri ~38 FPS'dan past bo'lsa, aniqlikni pasaytiramiz
+      if (sampled < 90 && pixelRatio > 1) {
+        sampled += 1;
+        if (frame > 0.026) slowFrames += 1;
+        if (sampled === 90 && slowFrames > 30) {
+          pixelRatio = Math.max(1, pixelRatio * 0.6);
+          renderer.setPixelRatio(pixelRatio);
+          resize();
+        }
+      }
       const t = now / 1000;
       cx += (tx - cx) * Math.min(1, dt * 3);
       cy += (ty - cy) * Math.min(1, dt * 3);
@@ -1332,9 +1384,11 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
 
     loop(performance.now());
 
+    // Konvert ochilmaguncha yoki yurak ekrandan chiqib ketganda render to'xtaydi
     let visible = true;
+    let opened = !document.body.classList.contains("locked");
     function updateLoop() {
-      const run = visible && !document.hidden;
+      const run = opened && visible && !document.hidden;
       if (run) last = performance.now();
       renderer.setAnimationLoop(run ? loop : null);
     }
@@ -1343,11 +1397,15 @@ Seni sevaman — bugun, ertaga va umrbod. 💖`;
       updateLoop();
     }).observe(stage);
     document.addEventListener("visibilitychange", updateLoop);
+    window.addEventListener("gate-open", () => {
+      opened = true;
+      updateLoop();
+    });
   }
 
   // Sferani Taubin yurak sirtiga "puflab" moslaymiz: (x²+9/4·y²+z²−1)³ − x²z³ − 9/80·y²z³ = 0
-  function heartGeometry() {
-    const sphere = new THREE.SphereGeometry(1, 160, 120);
+  function heartGeometry(widthSegments, heightSegments) {
+    const sphere = new THREE.SphereGeometry(1, widthSegments, heightSegments);
     const pos = sphere.attributes.position;
     const dir = new THREE.Vector3();
     const surface = (x, depth, up) => {
