@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12041c">
+<title>Sevgilim uchun 💖</title>
+<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/Sparkling%20heart/3D/sparkling_heart_3d.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://images.pexels.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Great+Vibes&family=Quicksand:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: dark;
+    --night: #12041c;
+    --plum: #2a0a35;
+    --pink: #ff4fa3;
+    --hot: #ff2e7e;
+    --rose: #ff86b4;
+    --violet: #a46bff;
+    --gold: #ffd27a;
+    --text: #fff0f7;
+    --muted: #eec6dc;
+    --paper: #fff8f1;
+    --ink: #4a1a3d;
+    --glass-border: rgba(255, 160, 210, 0.24);
+    --neon:
+      0 0 2px #fff,
+      0 0 8px #ffd3ea,
+      0 0 18px var(--pink),
+      0 0 34px var(--pink),
+      0 0 60px var(--hot),
+      0 0 96px var(--hot);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--night);
+    color: var(--text);
+    font-family: "Quicksand", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-weight: 500;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.locked { overflow: hidden; }
+  img { display: block; max-width: 100%; }
+  button { font: inherit; color: inherit; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+
+  /* ---------- Fon: gradient, yulduzlar, suzuvchi 3D yuraklar ---------- */
+  .backdrop, .stars, .floaters { position: fixed; inset: 0; pointer-events: none; }
+  .backdrop {
+    z-index: 0;
+    background:
+      radial-gradient(1100px 650px at 50% -8%, rgba(255, 46, 126, 0.34), transparent 62%),
+      radial-gradient(800px 600px at 105% 105%, rgba(164, 107, 255, 0.3), transparent 60%),
+      radial-gradient(700px 520px at -5% 65%, rgba(255, 79, 163, 0.18), transparent 60%),
+      linear-gradient(180deg, var(--plum) 0%, var(--night) 55%, #0b0313 100%);
+  }
+  .stars { z-index: 0; overflow: hidden; }
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
+    animation: twinkle var(--d) ease-in-out var(--delay) infinite;
+  }
+  @keyframes twinkle { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.95; } }
+
+  .floaters { z-index: 1; overflow: hidden; }
+  .floaters.top { z-index: 40; }
+  .floater {
+    position: absolute;
+    bottom: -100px;
+    width: var(--size);
+    height: var(--size);
+    opacity: var(--o);
+    animation: rise var(--dur) linear var(--delay) infinite;
+    will-change: transform;
+  }
+  .floater img { width: 100%; height: 100%; animation: wobble var(--spin) ease-in-out infinite alternate; }
+  @keyframes rise {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(var(--drift), -125vh, 0); }
+  }
+  @keyframes wobble {
+    from { transform: perspective(400px) rotateY(-40deg) rotateZ(-10deg); }
+    to { transform: perspective(400px) rotateY(40deg) rotateZ(10deg); }
+  }
+
+  /* ---------- Kirish: konvert ---------- */
+  .gate {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 24px 16px;
+    text-align: center;
+    background: radial-gradient(circle at 50% 42%, rgba(80, 14, 66, 0.72), rgba(12, 3, 20, 0.94) 72%);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: opacity 0.9s ease 0.15s, visibility 0s linear 1.05s;
+  }
+  .gate.open { opacity: 0; visibility: hidden; }
+  .gate-letter {
+    width: min(48vw, 220px);
+    height: auto;
+    filter: drop-shadow(0 22px 34px rgba(255, 46, 126, 0.5));
+    animation: bob 3.2s ease-in-out infinite;
+  }
+  .gate.open .gate-letter { animation: fly-away 0.9s cubic-bezier(0.5, 0, 0.75, 0) forwards; }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-14px) rotate(5deg); }
+  }
+  @keyframes fly-away { to { transform: translateY(-45vh) scale(1.5) rotate(18deg); opacity: 0; } }
+  .gate-title {
+    margin: 8px 0 0;
+    font-family: "Great Vibes", cursive;
+    font-weight: 400;
+    font-size: clamp(3.2rem, 14vw, 5.4rem);
+    line-height: 1.1;
+    color: #fff4fa;
+    text-shadow: var(--neon);
+  }
+  .gate-sub { margin: 0 0 20px; font-size: 1.08rem; color: var(--muted); }
+
+  .btn {
+    border: 0;
+    cursor: pointer;
+    border-radius: 999px;
+    padding: 15px 30px;
+    font-weight: 700;
+    font-size: 1.06rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--hot), var(--violet));
+    box-shadow: 0 12px 30px rgba(255, 46, 126, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .btn:hover { transform: translateY(-2px) scale(1.04); }
+  .pulse { animation: ring 2s ease-out infinite; }
+  @keyframes ring {
+    0% { box-shadow: 0 12px 30px rgba(255, 46, 126, 0.45), 0 0 0 0 rgba(255, 79, 163, 0.6); }
+    100% { box-shadow: 0 12px 30px rgba(255, 46, 126, 0.45), 0 0 0 22px rgba(255, 79, 163, 0); }
+  }
+
+  /* ---------- Bosh qism: 3D yurak va neon ism ---------- */
+  main, .footer { position: relative; z-index: 2; }
+  .hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px 64px;
+    text-align: center;
+  }
+  .heart-stage {
+    position: relative;
+    width: min(74vw, 360px);
+    aspect-ratio: 1;
+    margin-bottom: -6px;
+    cursor: pointer;
+    -webkit-mask-image: radial-gradient(closest-side, #000 82%, transparent);
+    mask-image: radial-gradient(closest-side, #000 82%, transparent);
+  }
+  .heart-stage canvas {
+    position: absolute;
+    inset: 0;
+    width: 100% !important;
+    height: 100% !important;
+    opacity: 0;
+    transition: opacity 1.2s ease;
+  }
+  .heart-stage.ready canvas { opacity: 1; }
+  .heart-fallback {
+    position: absolute;
+    inset: 16%;
+    width: 68%;
+    height: 68%;
+    animation: beat 1.3s ease-in-out infinite;
+    transition: opacity 0.8s ease;
+  }
+  .heart-stage.ready .heart-fallback { opacity: 0; }
+  @keyframes beat {
+    0%, 40%, 100% { transform: scale(1); }
+    12% { transform: scale(1.09); }
+    26% { transform: scale(1.04); }
+  }
+  .kicker {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--rose);
+  }
+  .neon {
+    margin: 0 0 6px;
+    padding: 0 0.12em;
+    font-family: "Great Vibes", cursive;
+    font-weight: 400;
+    font-size: clamp(4rem, 18vw, 8.5rem);
+    line-height: 1.12;
+    color: #fff6fb;
+    text-shadow: var(--neon);
+    opacity: 0.1;
+    overflow-wrap: anywhere;
+    outline: none;
+  }
+  body.lit .neon { animation: neon-on 1.9s linear 0.25s forwards, neon-hum 3.4s ease-in-out 2.4s infinite; }
+  @keyframes neon-on {
+    0% { opacity: 0.1; }
+    6% { opacity: 1; }
+    10% { opacity: 0.25; }
+    16% { opacity: 1; }
+    21% { opacity: 0.4; }
+    30%, 100% { opacity: 1; }
+  }
+  @keyframes neon-hum {
+    0%, 100% { opacity: 1; filter: brightness(1); }
+    50% { opacity: 1; filter: brightness(1.3) saturate(1.15); }
+  }
+  .tagline {
+    max-width: 32ch;
+    margin: 4px auto 28px;
+    font-size: 1.12rem;
+    line-height: 1.65;
+    color: var(--muted);
+  }
+  .scroll-hint {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: var(--rose);
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .scroll-hint span { font-size: 1.4rem; animation: hop 1.6s ease-in-out infinite; }
+  @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(7px); } }
+
+  /* ---------- Bo'limlar ---------- */
+  .section { max-width: 1060px; margin: 0 auto; padding: 84px 16px; }
+  .title {
+    margin: 0;
+    text-align: center;
+    font-family: "Great Vibes", cursive;
+    font-weight: 400;
+    font-size: clamp(2.8rem, 11vw, 4.4rem);
+    line-height: 1.15;
+    color: #ffe4f1;
+    text-shadow: 0 0 10px rgba(255, 79, 163, 0.8), 0 0 30px rgba(255, 46, 126, 0.45);
+  }
+  .subtitle {
+    max-width: 44ch;
+    margin: 8px auto 38px;
+    text-align: center;
+    font-size: 1.04rem;
+    line-height: 1.6;
+    color: var(--muted);
+  }
+
+  /* Maktub */
+  .letter {
+    max-width: 680px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 22px;
+    background: var(--paper);
+    color: var(--ink);
+    box-shadow: 0 34px 80px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+    cursor: pointer;
+  }
+  .letter-photo { width: 100%; height: clamp(150px, 36vw, 240px); object-fit: cover; background: #5a1030; }
+  .letter-paper {
+    padding: 22px 22px 26px;
+    background-image: repeating-linear-gradient(to bottom, transparent 0 37px, rgba(214, 120, 165, 0.25) 37px 38px);
+    background-position: 0 22px;
+  }
+  .letter-text {
+    position: relative;
+    margin: 0;
+    font-family: "Caveat", cursive;
+    font-weight: 500;
+    font-size: clamp(1.5rem, 5.6vw, 1.8rem);
+    line-height: 38px;
+    white-space: pre-wrap;
+  }
+  .letter-text .ghost { color: transparent; }
+  .letter-text .typed { position: absolute; inset: 0; }
+  .caret {
+    display: inline-block;
+    width: 2px;
+    height: 1.05em;
+    margin-left: 2px;
+    vertical-align: -0.12em;
+    background: var(--hot);
+    animation: blink 0.8s steps(1) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .sign {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 14px 0 0;
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: var(--hot);
+  }
+  .sign img { width: 46px; height: 46px; }
+
+  /* Sabablar: 3D aylanadigan kartalar */
+  .reasons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .flip {
+    position: relative;
+    width: 100%;
+    height: 224px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    perspective: 1000px;
+  }
+  .flip-inner {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transition: transform 0.8s cubic-bezier(0.2, 0.8, 0.25, 1.15);
+  }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 14px;
+    border-radius: 22px;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .front {
+    background: linear-gradient(160deg, rgba(80, 24, 80, 0.97), rgba(36, 10, 44, 0.97));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+  .front img { width: 80px; height: 80px; filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.4)); transition: transform 0.35s ease; }
+  .flip:hover .front img { transform: translateY(-5px) rotate(-6deg) scale(1.06); }
+  .front b { font-family: "Great Vibes", cursive; font-weight: 400; font-size: 2rem; line-height: 1.1; color: #ffe4f1; }
+  .front small { font-size: 0.78rem; letter-spacing: 0.06em; color: var(--muted); }
+  .back {
+    transform: rotateY(180deg);
+    background: linear-gradient(150deg, var(--hot), var(--violet));
+    box-shadow: 0 18px 40px rgba(255, 46, 126, 0.35);
+    font-size: 1.02rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    color: #fff;
+  }
+
+  /* Orzular: polaroid fotolar */
+  .polaroids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 26px 16px; padding-top: 6px; }
+  .polaroid-wrap { transform: rotate(var(--r)); }
+  .polaroid {
+    position: relative;
+    margin: 0;
+    padding: 9px 9px 12px;
+    border-radius: 6px;
+    background: #fffdf8;
+    box-shadow: 0 20px 44px rgba(0, 0, 0, 0.5);
+  }
+  .polaroid::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: -11px;
+    left: 50%;
+    width: 74px;
+    height: 22px;
+    background: rgba(255, 170, 205, 0.78);
+    transform: translateX(-50%) rotate(-4deg);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  }
+  .polaroid img { width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: 3px; background: #f1dfe6; }
+  .polaroid figcaption {
+    min-height: 2.5em;
+    margin-top: 9px;
+    font-family: "Caveat", cursive;
+    font-weight: 700;
+    font-size: clamp(1.08rem, 4.3vw, 1.4rem);
+    line-height: 1.2;
+    text-align: center;
+    color: var(--ink);
+  }
+
+  /* Faktlar */
+  .facts { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .fact {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 16px;
+    border-radius: 20px;
+    background: linear-gradient(160deg, rgba(66, 18, 68, 0.97), rgba(32, 8, 40, 0.97));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 14px 34px rgba(0, 0, 0, 0.3);
+  }
+  .fact img { flex: none; width: 60px; height: 60px; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35)); }
+  .fact p { margin: 0; font-size: 1rem; line-height: 1.55; }
+  .fact .twist { display: block; margin-top: 8px; font-weight: 700; line-height: 1.45; color: var(--rose); }
+  .fact .src { display: block; margin-top: 6px; font-size: 0.74rem; letter-spacing: 0.02em; color: rgba(238, 198, 220, 0.65); }
+
+  /* Kuponlar */
+  .coupons { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .coupon {
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.4));
+    transition: transform 0.25s ease;
+  }
+  .ticket {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 18px 14px 16px;
+    border-radius: 16px;
+    background: linear-gradient(150deg, #ffe6f1, #ffd0e5 60%, #ffc0dc);
+    color: var(--ink);
+    outline: 2px dashed rgba(224, 32, 107, 0.35);
+    outline-offset: -9px;
+    -webkit-mask:
+      radial-gradient(circle 10px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 10px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+    mask:
+      radial-gradient(circle 10px at 0 50%, #0000 98%, #000) left / 51% 100% no-repeat,
+      radial-gradient(circle 10px at 100% 50%, #0000 98%, #000) right / 51% 100% no-repeat;
+  }
+  .ticket img { width: 56px; height: 56px; }
+  .c-title { font-weight: 700; font-size: 1rem; line-height: 1.3; text-align: center; }
+  .c-valid { font-size: 0.72rem; color: #9b4a77; }
+  .coupon.on .ticket::after {
+    content: "SENIKI 💗";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 5px 12px;
+    border: 3px solid var(--hot);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--hot);
+    font-weight: 800;
+    font-size: 1.05rem;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    transform: translate(-50%, -50%) rotate(-14deg);
+    animation: stamp 0.4s cubic-bezier(0.2, 1.6, 0.4, 1) both;
+  }
+  @keyframes stamp { from { opacity: 0; transform: translate(-50%, -50%) rotate(-14deg) scale(2.2); } }
+
+  /* Savollar */
+  .question-card {
+    position: relative;
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 28px 18px 32px;
+    border-radius: 28px;
+    text-align: center;
+    background: linear-gradient(160deg, rgba(74, 20, 76, 0.97), rgba(30, 8, 38, 0.97));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 34px 80px rgba(0, 0, 0, 0.45);
+  }
+  .q-img { width: 116px; height: 116px; margin: 0 auto 4px; filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.45)); }
+  .question { margin: 6px 0 20px; font-size: clamp(1.4rem, 5.6vw, 1.85rem); font-weight: 700; line-height: 1.35; }
+  .btn-row { position: relative; height: 150px; display: flex; align-items: center; justify-content: center; gap: 14px; }
+  .choices-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .choice-btn {
+    padding: 13px 22px;
+    border-radius: 999px;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.08);
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+  .choice-btn:hover { transform: translateY(-2px) scale(1.04); background: rgba(255, 79, 163, 0.25); border-color: var(--pink); }
+  #yes-btn { transform: scale(var(--yes-scale, 1)); }
+  #yes-btn:hover { transform: scale(calc(var(--yes-scale, 1) * 1.05)); }
+  #no-btn {
+    padding: 14px 26px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    background: transparent;
+    color: var(--muted);
+    font-weight: 700;
+    cursor: pointer;
+    transition: left 0.15s ease, top 0.15s ease, opacity 0.3s ease, transform 0.3s ease;
+  }
+  #no-btn.roaming { position: absolute; }
+  #no-btn.gone { opacity: 0; transform: scale(0.5); pointer-events: none; }
+  .fade { animation: fade-up 0.45s ease both; }
+  .pop { animation: pop 0.55s cubic-bezier(0.2, 1.5, 0.4, 1) both; }
+  @keyframes fade-up { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes pop { from { opacity: 0; transform: scale(0.5) rotate(-10deg); } }
+  .result { animation: pop 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; }
+  .result-img { width: 132px; height: 132px; margin: 0 auto; animation: beat 1.3s ease-in-out infinite; }
+  .result-title {
+    margin: 4px 0 6px;
+    font-family: "Great Vibes", cursive;
+    font-size: clamp(3.4rem, 14vw, 4.8rem);
+    line-height: 1.1;
+    color: #fff6fb;
+    text-shadow: var(--neon);
+  }
+  .result-text { max-width: 30ch; margin: 0 auto 14px; font-size: 1.18rem; line-height: 1.7; }
+  .result-text .her-name { color: var(--rose); font-weight: 700; }
+  .result-hint { margin: 0; font-size: 0.92rem; color: var(--muted); }
+
+  .footer { padding: 20px 16px 56px; text-align: center; font-size: 0.95rem; color: var(--muted); }
+  .footer img { display: inline-block; width: 22px; height: 22px; margin-left: 4px; vertical-align: -5px; }
+
+  /* Pastga aylantirganda chiqib keladigan animatsiya */
+  .reveal {
+    opacity: 0;
+    transform: translateY(36px) scale(0.97);
+    transition: opacity 0.9s ease var(--rd, 0s), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--rd, 0s);
+  }
+  .reveal.in { opacity: 1; transform: none; }
+  .coupon:hover { transform: translateY(-4px) rotate(-1deg); }
+
+  @media (min-width: 700px) {
+    .facts { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  }
+  @media (min-width: 780px) {
+    .reasons { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px; }
+    .flip { height: 250px; }
+    .polaroids { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px 30px; }
+    .coupons { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  }
+  @media (min-width: 1000px) {
+    .facts { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 380px) {
+    .btn { padding: 14px 22px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      transition-delay: 0s !important;
+    }
+    html { scroll-behavior: auto; }
+    .floaters { display: none; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<div class="backdrop" aria-hidden="true"></div>
+<div class="stars" id="stars" aria-hidden="true"></div>
+<div class="floaters" id="floaters" aria-hidden="true"></div>
+<div class="floaters top" id="burst" aria-hidden="true"></div>
+
+<div class="gate" id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <img class="gate-letter" src="https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/Love%20letter/3D/love_letter_3d.png" alt="" width="256" height="256">
+  <h2 class="gate-title" id="gate-title">Senga xat bor</h2>
+  <p class="gate-sub">Faqat sen uchun yozilgan... 🤫</p>
+  <button class="btn pulse" id="open-btn" type="button">Ochish 💌</button>
+</div>
+
+<main>
+  <header class="hero">
+    <div class="heart-stage" id="heart-stage" title="Bos ✨">
+      <img class="heart-fallback" data-e="sparklingHeart" alt="">
+    </div>
+    <p class="kicker">Dunyodagi eng go'zal qizga</p>
+    <h1 class="neon her-name" id="her-name" tabindex="-1">Sevgilim</h1>
+    <p class="tagline">Sen — mening eng shirin orzuim, eng sevimli hikoyam va eng katta baxtim.</p>
+    <a class="scroll-hint" href="#maktub">Davomini ko'r <span aria-hidden="true">↓</span></a>
+  </header>
+
+  <section class="section" id="maktub">
+    <h2 class="title reveal">Senga maktubim</h2>
+    <p class="subtitle reveal">Har bir so'zi — yuragimdan 💌</p>
+    <article class="letter reveal" id="letter">
+      <img class="letter-photo" id="letter-photo" alt="Qizil atirgullar" loading="lazy">
+      <div class="letter-paper">
+        <p class="letter-text"><span class="ghost" id="letter-ghost"></span><span class="typed" id="letter-typed" aria-hidden="true"></span></p>
+        <p class="sign">Faqat seniki <img data-e="kiss" alt="" loading="lazy"></p>
+      </div>
+    </article>
+  </section>
+
+  <section class="section">
+    <h2 class="title reveal">Nega aynan sen?</h2>
+    <p class="subtitle reveal">Kartani bos — ichida sir bor 💫</p>
+    <div class="reasons" id="reasons"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="title reveal">Sen bilan orzularim</h2>
+    <p class="subtitle reveal">Hammasini birga qilamiz — va'da beraman 🤞</p>
+    <div class="polaroids" id="dreams"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="title reveal">Sevgi haqida bilasanmi?</h2>
+    <p class="subtitle reveal">Olimlar ham tasdiqlagan shirin haqiqatlar 💡</p>
+    <div class="facts" id="facts"></div>
+  </section>
+
+  <section class="section">
+    <h2 class="title reveal">Sovg'a kuponlari</h2>
+    <p class="subtitle reveal">Istaganingni tanla, skrinshot qilib menga yubor — albatta bajaraman 😉</p>
+    <div class="coupons" id="coupons"></div>
+  </section>
+
+  <section class="section" id="savol">
+    <h2 class="title reveal">Va nihoyat...</h2>
+    <p class="subtitle reveal">Senga bir nechta muhim savolim bor 🥺</p>
+    <div class="question-card reveal">
+      <img class="q-img" id="q-img" alt="">
+      <h3 class="question" id="question-text"></h3>
+      <div class="btn-row" id="btn-row"></div>
+      <div class="result" id="result" hidden>
+        <img class="result-img" data-e="inLove" alt="">
+        <p class="result-title">Bilardim!</p>
+        <p class="result-text">Men ham seni cheksiz sevaman, <span class="her-name">Sevgilim</span>. Umrimning oxirigacha faqat seniki bo'lib qolaman.</p>
+        <p class="result-hint">📸 Shu lahzani skrinshot qilib menga yubor — saqlab qo'yaman</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer">Faqat sen uchun, cheksiz muhabbat bilan yaratildi <img data-e="redHeart" alt="" loading="lazy"></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+<script>
+  // ✏️ Uning ismini shu yerga yozing:
+  const ISMI = "Sevgilim";
+
+  // 3D PNG ikonkalar — Microsoft Fluent Emoji (MIT litsenziya)
+  const FLUENT = "https://cdn.jsdelivr.net/gh/microsoft/fluentui-emoji@1ffb34c752ecf5d402f04cfb4b392c77f57c54bc/assets/";
+  const EMOJI = {
+    loveLetter: "Love letter/3D/love_letter_3d.png",
+    sparklingHeart: "Sparkling heart/3D/sparkling_heart_3d.png",
+    redHeart: "Red heart/3D/red_heart_3d.png",
+    pinkHeart: "Pink heart/3D/pink_heart_3d.png",
+    ribbonHeart: "Heart with ribbon/3D/heart_with_ribbon_3d.png",
+    twoHearts: "Two hearts/3D/two_hearts_3d.png",
+    revolvingHearts: "Revolving hearts/3D/revolving_hearts_3d.png",
+    growingHeart: "Growing heart/3D/growing_heart_3d.png",
+    rose: "Rose/3D/rose_3d.png",
+    sparkles: "Sparkles/3D/sparkles_3d.png",
+    blossom: "Cherry blossom/3D/cherry_blossom_3d.png",
+    kiss: "Kiss mark/3D/kiss_mark_3d.png",
+    inLove: "Smiling face with hearts/3D/smiling_face_with_hearts_3d.png",
+    heartEyes: "Smiling face with heart-eyes/3D/smiling_face_with_heart-eyes_3d.png",
+    starStruck: "Star-struck/3D/star-struck_3d.png",
+    pleading: "Pleading face/3D/pleading_face_3d.png",
+    music: "Musical notes/3D/musical_notes_3d.png",
+    hugFace: "Hugging face/3D/hugging_face_3d.png",
+    laugh: "Face with tears of joy/3D/face_with_tears_of_joy_3d.png",
+    home: "House with garden/3D/house_with_garden_3d.png",
+    moon: "Crescent moon/3D/crescent_moon_3d.png",
+    ring: "Ring/3D/ring_3d.png",
+    sunrise: "Sunrise/3D/sunrise_3d.png",
+    anatomicalHeart: "Anatomical heart/3D/anatomical_heart_3d.png",
+    heartHands: "Heart hands/Default/3D/heart_hands_3d_default.png",
+    stopwatch: "Stopwatch/3D/stopwatch_3d.png",
+    otter: "Otter/3D/otter_3d.png",
+    penguin: "Penguin/3D/penguin_3d.png",
+    movie: "Clapper board/3D/clapper_board_3d.png",
+    bouquet: "Bouquet/3D/bouquet_3d.png",
+    chocolate: "Chocolate bar/3D/chocolate_bar_3d.png",
+    pancakes: "Pancakes/3D/pancakes_3d.png",
+  };
+  const em = (key) => encodeURI(FLUENT + EMOJI[key]);
+
+  // Real fotolar — Pexels (bepul litsenziya)
+  const pexels = (id, w, h) => `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}&h=${h}&fit=crop`;
+
+  const MAKTUB = `Azizim,
+
+Bilasanmi, sen hayotimga kirib kelgan kundan beri hamma narsa o'zgardi. Tonglar yorug'roq, kunlar quvnoqroq, kechalarim esa sen haqingdagi shirin o'ylarga to'la.
+
+Tabassuming — men ko'rgan eng go'zal manzara. Ovozing — eng sevimli qo'shig'im. Sen yonimda bo'lsang, dunyo tinchroq va chiroyliroq tuyuladi.
+
+Men mukammal emasman, lekin seni chin yurakdan, butun borlig'im bilan sevaman. Har kuni seni kechagidan ham ko'proq sevishga va'da beraman.
+
+Seni sevaman — bugun, ertaga va umrbod. 💖`;
+
+  const SABABLAR = [
+    { e: "inLove", t: "Tabassuming", m: "Sen kulganingda eng bulutli kun ham quyoshli bo'lib ketadi." },
+    { e: "starStruck", t: "Ko'zlaring", m: "Ularga qarasam, vaqt to'xtab qolgandek bo'ladi." },
+    { e: "music", t: "Ovozing", m: "Ovozingni eshitishim bilan barcha charchoqlarim yo'qoladi." },
+    { e: "ribbonHeart", t: "Mehring", m: "Hammaga, ayniqsa menga shunchalik g'amxo'rsanki — bunga qoyil qolaman." },
+    { e: "laugh", t: "Kulging", m: "Kulging shunchalik yuqumliki, beixtiyor men ham kulib yuboraman." },
+    { e: "home", t: "Uyim", m: "Qayerda bo'lmay, sen bilan bo'lsam — o'zimni uydagidek his qilaman." },
+    { e: "moon", t: "Har kecha", m: "Uxlashdan oldin eng oxirgi o'ylaganim — doim sen." },
+    { e: "ring", t: "Kelajagim", m: "Kelajagimni tasavvur qilsam, unda doim sen borsan." },
+  ];
+
+  // Fotolarni o'zlaringizning suratlaringiz havolasiga almashtirsangiz ham bo'ladi
+  const ORZULAR = [
+    { rasm: pexels(20183378, 700, 700), matn: "Quyosh botganda qo'lingni ushlab turish 🌅" },
+    { rasm: pexels(12703064, 700, 700), matn: "Har tong sen bilan bir piyola qahva ☕" },
+    { rasm: pexels(5933360, 700, 700), matn: "Yomg'irda bitta soyabon ostida 🌧️" },
+    { rasm: pexels(9584940, 700, 700), matn: "Bahorda gullar orasida piknik 🧺" },
+    { rasm: pexels(11736477, 700, 700), matn: "Yulduzlar ostida tong otguncha suhbat ✨" },
+    { rasm: pexels(18156055, 700, 700), matn: "Parijda, Eyfel minorasi yonida raqs 🗼" },
+  ];
+
+  const FAKTLAR = [
+    {
+      e: "anatomicalHeart",
+      m: "Sevishganlar yonma-yon o'tirganda, hatto gaplashmasa ham, ularning yurak urishi va nafasi bir maromga tushadi.",
+      s: "Demak, yuragim sening yuraging bilan bir xil uradi 💓",
+      src: "UC Davis universiteti tadqiqoti, 2013",
+    },
+    {
+      e: "heartHands",
+      m: "Sevgan insonning qo'lini ushlash og'riqni sezilarli kamaytiradi va ikki kishining miya to'lqinlarini uyg'unlashtiradi.",
+      s: "Shuning uchun qo'lingni hech qachon qo'yib yubormayman 🤝",
+      src: "PNAS ilmiy jurnali, 2018",
+    },
+    {
+      e: "hugFace",
+      m: "Iliq quchoq «mehr gormoni» — oksitotsin miqdorini oshiradi, stress va qon bosimini pasaytiradi.",
+      s: "Bu — har kuni quchoqlashishimiz uchun ilmiy asos 🤗",
+      src: "Shimoliy Karolina universiteti tadqiqoti",
+    },
+    {
+      e: "stopwatch",
+      m: "Olimlarning hisobicha, oshiq bo'lish uchun miyaga atigi beshdan bir soniya kifoya.",
+      s: "Seni birinchi ko'rganimda menga undan ham kamroq vaqt kerak bo'lgan 😍",
+      src: "Sirakuza universiteti, 2010",
+    },
+    {
+      e: "otter",
+      m: "Dengiz suvsarlari ba'zan uxlayotganda oqim olib ketmasligi uchun bir-birining qo'lini ushlab olishadi.",
+      s: "Men ham sendan hech qachon uzoqlashib ketmayman 🦦",
+    },
+    {
+      e: "penguin",
+      m: "Pingvinlar sevgan juftiga eng silliq va chiroyli toshchani topib, sovg'a qilishadi.",
+      s: "Bu sahifa — men senga topgan toshcham 🐧💎",
+    },
+  ];
+
+  const KUPONLAR = [
+    { e: "hugFace", m: "1 ta uzuuun quchoq" },
+    { e: "movie", m: "Sen tanlagan kino kechasi" },
+    { e: "bouquet", m: "Sababsiz gullar" },
+    { e: "chocolate", m: "Bir quti shokolad" },
+    { e: "moon", m: "Oy nurida kechki sayr" },
+    { e: "pancakes", m: "Men tayyorlagan nonushta" },
+  ];
+
+  // 'yesno' — «Yo'q» tugmasi qochadi; 'choice' — oddiy variantlar
+  const SAVOLLAR = [
+    { type: "yesno", text: "Meni sevasanmi?", e: "heartEyes", yes: "Ha, sevaman ❤️" },
+    { type: "choice", text: "Meni qanchalik sevasan?", e: "revolvingHearts", options: ["Ozgina 🤏", "Ko'p 💕", "Juda ko'p 💖", "Cheksiz ♾️"] },
+    { type: "choice", text: "Qachon uchrashamiz?", e: "sunrise", options: ["Bugun 🏃‍♀️", "Ertaga 🌅", "Iloji boricha tezroq ⏱️"] },
+    { type: "yesno", text: "Turmushga chiqasanmi menga?", e: "ring", yes: "Ha, chiqaman 💍" },
+    { type: "yesno", text: "Umrim oxirigacha yonimda bo'lasanmi?", e: "twoHearts", yes: "Ha, har doim ❤️" },
+  ];
+  const DODGE_LINES = [
+    "Ishonchim komil, adashib bosding 🙈",
+    "«Yo'q» tugmasi ishlamaydi 😄",
+    "Yana bir bor o'ylab ko'r 🥺",
+    "Yuragim og'riyapti... 💔",
+    "Mayli, endi faqat «Ha» qoldi 😌",
+  ];
+
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const PALETTE = ["#ff2e7e", "#ff4fa3", "#ff86b4", "#ffd27a", "#a46bff", "#ffffff"];
+  const el = (tag, cls) => {
+    const node = document.createElement(tag);
+    if (cls) node.className = cls;
+    return node;
+  };
+
+  document.querySelectorAll(".her-name").forEach((node) => { node.textContent = ISMI; });
+  document.title = `${ISMI} uchun 💖`;
+  document.querySelectorAll("img[data-e]").forEach((img) => { img.src = em(img.dataset.e); });
+  document.getElementById("letter-photo").src = pexels(196664, 1200, 520);
+
+  // --- Yulduzlar va suzuvchi 3D yuraklar ---
+  const starsEl = document.getElementById("stars");
+  for (let i = 0; i < 70; i++) {
+    const s = el("i", "star");
+    const size = (1 + Math.random() * 2).toFixed(1);
+    s.style.cssText = `left:${Math.random() * 100}%;top:${Math.random() * 100}%;width:${size}px;height:${size}px;--d:${(2 + Math.random() * 4).toFixed(1)}s;--delay:${(-Math.random() * 6).toFixed(1)}s`;
+    starsEl.append(s);
+  }
+
+  const FLOAT_KEYS = ["redHeart", "pinkHeart", "sparklingHeart", "ribbonHeart", "twoHearts", "revolvingHearts", "rose", "sparkles", "blossom", "growingHeart"];
+  function spawnFloater(container, burst) {
+    const f = el("div", "floater");
+    const size = (burst ? 36 : 24) + Math.random() * 44;
+    const dur = burst ? 4.5 + Math.random() * 3 : 16 + Math.random() * 16;
+    f.style.left = `${Math.random() * 94}vw`;
+    f.style.setProperty("--size", `${size}px`);
+    f.style.setProperty("--o", burst ? "1" : (0.28 + size / 150).toFixed(2));
+    f.style.setProperty("--dur", `${dur}s`);
+    f.style.setProperty("--delay", burst ? "0s" : `${-Math.random() * dur}s`);
+    f.style.setProperty("--drift", `${Math.round(Math.random() * 140 - 70)}px`);
+    f.style.setProperty("--spin", `${(2 + Math.random() * 3).toFixed(1)}s`);
+    if (burst) {
+      f.style.animationIterationCount = "1";
+      f.addEventListener("animationend", () => f.remove());
+    }
+    const img = el("img");
+    img.alt = "";
+    img.src = em(FLOAT_KEYS[Math.floor(Math.random() * FLOAT_KEYS.length)]);
+    f.append(img);
+    container.append(f);
+  }
+  const floatersEl = document.getElementById("floaters");
+  const burstEl = document.getElementById("burst");
+  for (let i = 0, n = innerWidth < 600 ? 10 : 16; i < n; i++) spawnFloater(floatersEl, false);
+
+  // --- Konfetti (canvas-confetti) ---
+  let heartShape = null;
+  function confettiShapes() {
+    if (!heartShape && window.confetti && confetti.shapeFromPath) {
+      heartShape = confetti.shapeFromPath({ path: "M167 72c19,-38 37,-56 75,-56 42,0 76,33 76,75 0,76 -76,151 -151,227 -76,-76 -151,-151 -151,-227 0,-42 33,-75 75,-75 38,0 57,18 76,56z" });
+    }
+    return heartShape ? [heartShape, heartShape, "circle"] : ["circle"];
+  }
+  function heartBurst(origin, count = 60) {
+    if (!window.confetti) return;
+    confetti({ particleCount: count, spread: 75, startVelocity: 34, scalar: 1.3, ticks: 160, colors: PALETTE, shapes: confettiShapes(), origin, zIndex: 100, disableForReducedMotion: true });
+  }
+  function celebrate() {
+    if (!window.confetti) return;
+    const end = Date.now() + 3500;
+    const shapes = confettiShapes();
+    (function side() {
+      confetti({ particleCount: 4, angle: 60, spread: 65, startVelocity: 55, origin: { x: 0, y: 0.75 }, colors: PALETTE, shapes, scalar: 1.4, zIndex: 100, disableForReducedMotion: true });
+      confetti({ particleCount: 4, angle: 120, spread: 65, startVelocity: 55, origin: { x: 1, y: 0.75 }, colors: PALETTE, shapes, scalar: 1.4, zIndex: 100, disableForReducedMotion: true });
+      if (Date.now() < end) requestAnimationFrame(side);
+    })();
+    setTimeout(() => heartBurst({ x: 0.5, y: 0.4 }, 150), 350);
+  }
+  function originOf(node) {
+    const r = node.getBoundingClientRect();
+    return { x: (r.left + r.width / 2) / innerWidth, y: (r.top + r.height / 2) / innerHeight };
+  }
+
+  // --- Konvertni ochish ---
+  const gate = document.getElementById("gate");
+  document.getElementById("open-btn").addEventListener("click", () => {
+    gate.classList.add("open");
+    document.body.classList.remove("locked");
+    document.body.classList.add("lit");
+    heartBurst({ x: 0.5, y: 0.55 }, 90);
+    setTimeout(() => {
+      gate.remove();
+      document.getElementById("her-name").focus({ preventScroll: true });
+    }, 1150);
+  });
+
+  const stage = document.getElementById("heart-stage");
+  stage.addEventListener("click", () => heartBurst(originOf(stage), 45));
+
+  // --- Maktub (yozuv mashinkasi effekti) ---
+  const letter = document.getElementById("letter");
+  const typed = document.getElementById("letter-typed");
+  document.getElementById("letter-ghost").textContent = MAKTUB;
+  const letterChars = Array.from(MAKTUB);
+  let typingDone = false;
+  function typeLetter() {
+    if (calm) {
+      typingDone = true;
+      typed.textContent = MAKTUB;
+      return;
+    }
+    const caret = el("span", "caret");
+    let i = 0;
+    (function next() {
+      if (typingDone) return;
+      i += 1;
+      typed.textContent = letterChars.slice(0, i).join("");
+      typed.append(caret);
+      if (i >= letterChars.length) {
+        typingDone = true;
+        setTimeout(() => caret.remove(), 2000);
+        return;
+      }
+      const ch = letterChars[i - 1];
+      setTimeout(next, ch === "\n" ? 280 : ".,!?—".includes(ch) ? 200 : 26 + Math.random() * 34);
+    })();
+  }
+  letter.addEventListener("click", () => {
+    if (typingDone) return;
+    typingDone = true;
+    typed.textContent = MAKTUB;
+  });
+  new IntersectionObserver((entries, obs) => {
+    if (!entries[0].isIntersecting) return;
+    obs.disconnect();
+    setTimeout(typeLetter, 500);
+  }, { threshold: 0.3 }).observe(letter);
+
+  // --- Sabablar ---
+  const reasonsEl = document.getElementById("reasons");
+  SABABLAR.forEach((r, i) => {
+    const card = el("button", "flip reveal");
+    card.type = "button";
+    card.setAttribute("aria-pressed", "false");
+    card.style.setProperty("--rd", `${(i % 4) * 0.08}s`);
+    const inner = el("span", "flip-inner");
+    const front = el("span", "face front");
+    const img = el("img");
+    img.loading = "lazy";
+    img.alt = "";
+    img.src = em(r.e);
+    const title = el("b");
+    title.textContent = r.t;
+    const hint = el("small");
+    hint.textContent = "bos 👆";
+    front.append(img, title, hint);
+    const back = el("span", "face back");
+    back.textContent = r.m;
+    inner.append(front, back);
+    card.append(inner);
+    reasonsEl.append(card);
+    card.addEventListener("click", () => {
+      const on = card.classList.toggle("on");
+      card.setAttribute("aria-pressed", String(on));
+    });
+  });
+
+  // --- Orzular (polaroidlar + vanilla-tilt 3D) ---
+  const dreamsEl = document.getElementById("dreams");
+  const ROT = [-4, 3, -2, 4, -3, 2];
+  ORZULAR.forEach((d, i) => {
+    const outer = el("div", "reveal");
+    outer.style.setProperty("--rd", `${(i % 3) * 0.1}s`);
+    const wrap = el("div", "polaroid-wrap");
+    wrap.style.setProperty("--r", `${ROT[i % ROT.length]}deg`);
+    const fig = el("figure", "polaroid");
+    const img = el("img");
+    img.loading = "lazy";
+    img.width = 700;
+    img.height = 700;
+    img.alt = d.matn;
+    img.src = d.rasm;
+    const cap = el("figcaption");
+    cap.textContent = d.matn;
+    fig.append(img, cap);
+    wrap.append(fig);
+    outer.append(wrap);
+    dreamsEl.append(outer);
+  });
+  if (window.VanillaTilt) {
+    VanillaTilt.init(document.querySelectorAll(".polaroid"), { max: 14, speed: 500, scale: 1.05, perspective: 900, glare: true, "max-glare": 0.35 });
+  }
+
+  // --- Faktlar ---
+  const factsEl = document.getElementById("facts");
+  FAKTLAR.forEach((f, i) => {
+    const card = el("article", "fact reveal");
+    card.style.setProperty("--rd", `${(i % 3) * 0.08}s`);
+    const img = el("img");
+    img.loading = "lazy";
+    img.alt = "";
+    img.src = em(f.e);
+    const body = el("div");
+    const p = el("p");
+    p.textContent = f.m;
+    const twist = el("span", "twist");
+    twist.textContent = f.s;
+    body.append(p, twist);
+    if (f.src) {
+      const src = el("span", "src");
+      src.textContent = f.src;
+      body.append(src);
+    }
+    card.append(img, body);
+    factsEl.append(card);
+  });
+
+  // --- Kuponlar ---
+  const couponsEl = document.getElementById("coupons");
+  KUPONLAR.forEach((c, i) => {
+    const b = el("button", "coupon reveal");
+    b.type = "button";
+    b.setAttribute("aria-pressed", "false");
+    b.style.setProperty("--rd", `${(i % 3) * 0.08}s`);
+    const ticket = el("span", "ticket");
+    const img = el("img");
+    img.loading = "lazy";
+    img.alt = "";
+    img.src = em(c.e);
+    const name = el("span", "c-title");
+    name.textContent = c.m;
+    const valid = el("span", "c-valid");
+    valid.textContent = "Muddati: cheksiz ♾️";
+    ticket.append(img, name, valid);
+    b.append(ticket);
+    couponsEl.append(b);
+    b.addEventListener("click", () => {
+      const on = b.classList.toggle("on");
+      b.setAttribute("aria-pressed", String(on));
+      if (on) heartBurst(originOf(b), 26);
+    });
+  });
+
+  // --- Savollar ---
+  const qImg = document.getElementById("q-img");
+  const questionText = document.getElementById("question-text");
+  const btnRow = document.getElementById("btn-row");
+  const result = document.getElementById("result");
+  let stepIndex = 0;
+
+  function restart(node, cls) {
+    node.classList.remove(cls);
+    void node.offsetWidth;
+    node.classList.add(cls);
+  }
+
+  function makeButton(label, cls) {
+    const b = el("button", cls);
+    b.type = "button";
+    b.textContent = label;
+    return b;
+  }
+
+  function renderStep() {
+    const step = SAVOLLAR[stepIndex];
+    questionText.textContent = step.text;
+    qImg.src = em(step.e);
+    restart(questionText, "fade");
+    restart(qImg, "pop");
+    btnRow.replaceChildren();
+    btnRow.className = step.type === "choice" ? "choices-row" : "btn-row";
+
+    if (step.type === "yesno") {
+      const yes = makeButton(step.yes, "btn");
+      yes.id = "yes-btn";
+      const no = makeButton("Yo'q", "");
+      no.id = "no-btn";
+      btnRow.append(yes, no);
+      setupDodge(no, yes, step);
+      yes.addEventListener("click", () => advance(yes));
+    } else {
+      step.options.forEach((label) => {
+        const b = makeButton(label, "choice-btn");
+        b.addEventListener("click", () => advance(b));
+        btnRow.append(b);
+      });
+    }
+  }
+
+  function advance(fromButton) {
+    heartBurst(originOf(fromButton), 30);
+    stepIndex += 1;
+    if (stepIndex >= SAVOLLAR.length) finish();
+    else renderStep();
+  }
+
+  function setupDodge(noBtn, yesBtn, step) {
+    let dodges = 0;
+    const myStep = stepIndex;
+
+    function overlapsYes(x, y, rowRect) {
+      const yr = yesBtn.getBoundingClientRect();
+      const left = rowRect.left + x;
+      const top = rowRect.top + y;
+      return !(left + noBtn.offsetWidth < yr.left - 8 || left > yr.right + 8 ||
+               top + noBtn.offsetHeight < yr.top - 8 || top > yr.bottom + 8);
+    }
+
+    function dodge(e) {
+      if (e) e.preventDefault();
+      if (dodges >= DODGE_LINES.length) return;
+      dodges += 1;
+
+      const rowRect = btnRow.getBoundingClientRect();
+      if (!noBtn.classList.contains("roaming")) {
+        const r = noBtn.getBoundingClientRect();
+        noBtn.style.left = `${r.left - rowRect.left}px`;
+        noBtn.style.top = `${r.top - rowRect.top}px`;
+        noBtn.classList.add("roaming");
+        void noBtn.offsetWidth;
+      }
+      yesBtn.style.setProperty("--yes-scale", 1 + dodges * 0.07);
+
+      const maxX = Math.max(btnRow.clientWidth - noBtn.offsetWidth - 6, 6);
+      const maxY = Math.max(btnRow.clientHeight - noBtn.offsetHeight - 6, 6);
+      let x = 0;
+      let y = 0;
+      for (let tries = 0; tries < 14; tries++) {
+        x = Math.random() * maxX;
+        y = Math.random() * maxY;
+        if (!overlapsYes(x, y, rowRect)) break;
+      }
+      noBtn.style.left = `${x}px`;
+      noBtn.style.top = `${y}px`;
+
+      questionText.textContent = DODGE_LINES[dodges - 1];
+      qImg.src = em("pleading");
+
+      if (dodges >= DODGE_LINES.length) {
+        noBtn.classList.add("gone");
+        setTimeout(() => noBtn.remove(), 300);
+        setTimeout(() => {
+          if (stepIndex !== myStep) return;
+          questionText.textContent = step.text;
+          qImg.src = em(step.e);
+        }, 1700);
+      }
+    }
+
+    noBtn.addEventListener("mouseenter", dodge);
+    noBtn.addEventListener("click", dodge);
+    noBtn.addEventListener("touchstart", dodge, { passive: false });
+  }
+
+  function finish() {
+    qImg.hidden = true;
+    questionText.hidden = true;
+    btnRow.hidden = true;
+    result.hidden = false;
+    celebrate();
+    for (let i = 0; i < 26; i++) setTimeout(() => spawnFloater(burstEl, true), i * 70);
+  }
+
+  renderStep();
+
+  // --- Pastga tushganda elementlarni chiroyli chiqarish ---
+  const revealObs = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      const node = entry.target;
+      revealObs.unobserve(node);
+      node.classList.add("in");
+      const done = (e) => {
+        if (e.target !== node) return;
+        node.removeEventListener("transitionend", done);
+        node.classList.remove("reveal", "in");
+      };
+      node.addEventListener("transitionend", done);
+    });
+  }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+  document.querySelectorAll(".reveal").forEach((node) => revealObs.observe(node));
+</script>
+
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+</script>
+<script type="module">
+  // Haqiqiy 3D yurak — Three.js
+  import * as THREE from "three";
+  import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+  import { mergeVertices } from "three/addons/utils/BufferGeometryUtils.js";
+
+  const stage = document.getElementById("heart-stage");
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  let renderer = null;
+  try {
+    renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
+  } catch (err) {
+    console.warn("WebGL ishlamadi — PNG yurak ko'rsatiladi.", err);
+  }
+  if (renderer) start(renderer);
+
+  function start(renderer) {
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    renderer.toneMappingExposure = 1.05;
+    stage.append(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    scene.environmentIntensity = 0.65;
+    pmrem.dispose();
+
+    const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
+    camera.position.set(0, 0, 8.6);
+
+    scene.add(new THREE.HemisphereLight(0xffd6ec, 0x2a0830, 0.45));
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    keyLight.position.set(2.5, 4, 5);
+    scene.add(keyLight);
+    const violetLight = new THREE.PointLight(0xa46bff, 28, 20, 2);
+    violetLight.position.set(-3, -1.5, -2.5);
+    scene.add(violetLight);
+    const pinkLight = new THREE.PointLight(0xff4fa3, 22, 20, 2);
+    pinkLight.position.set(3, -2, 3);
+    scene.add(pinkLight);
+
+    const geo = heartGeometry();
+    const heart = new THREE.Mesh(geo, new THREE.MeshPhysicalMaterial({
+      color: 0xff0a4e,
+      roughness: 0.28,
+      metalness: 0,
+      clearcoat: 1,
+      clearcoatRoughness: 0.05,
+      sheen: 0.25,
+      sheenColor: new THREE.Color(0xff6fae),
+      sheenRoughness: 0.5,
+      iridescence: 0.15,
+      iridescenceIOR: 1.3,
+    }));
+    scene.add(heart);
+
+    const orbit = new THREE.Group();
+    orbit.rotation.set(0.38, 0, -0.22);
+    scene.add(orbit);
+    const gold = new THREE.MeshPhysicalMaterial({ color: 0xffc56e, metalness: 1, roughness: 0.22, clearcoat: 0.5 });
+    const blush = new THREE.MeshPhysicalMaterial({ color: 0xff8cc6, roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 });
+    const minis = [];
+    for (let i = 0; i < 6; i++) {
+      const mini = new THREE.Mesh(geo, i % 2 ? gold : blush);
+      const a = (i / 6) * Math.PI * 2;
+      mini.scale.setScalar(0.22);
+      mini.position.set(Math.cos(a) * 1.85, 0, Math.sin(a) * 1.85);
+      orbit.add(mini);
+      minis.push(mini);
+    }
+
+    const COUNT = 150;
+    const positions = new Float32Array(COUNT * 3);
+    for (let i = 0; i < COUNT; i++) {
+      const r = 1.5 + Math.random() * 0.75;
+      const th = Math.random() * Math.PI * 2;
+      const ph = Math.acos(2 * Math.random() - 1);
+      positions[i * 3] = r * Math.sin(ph) * Math.cos(th);
+      positions[i * 3 + 1] = r * Math.cos(ph) * 0.85;
+      positions[i * 3 + 2] = r * Math.sin(ph) * Math.sin(th);
+    }
+    const sparkGeo = new THREE.BufferGeometry();
+    sparkGeo.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    const sparkMat = new THREE.PointsMaterial({
+      size: 0.12,
+      map: glowTexture(),
+      color: 0xffc8e6,
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const sparkles = new THREE.Points(sparkGeo, sparkMat);
+    scene.add(sparkles);
+
+    function resize() {
+      const w = stage.clientWidth || 300;
+      const h = stage.clientHeight || 300;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    new ResizeObserver(resize).observe(stage);
+
+    let tx = 0;
+    let ty = 0;
+    let cx = 0;
+    let cy = 0;
+    let spin = 0;
+    let spinVel = 0;
+    let last = performance.now();
+    let firstFrame = true;
+    window.addEventListener("pointermove", (e) => {
+      tx = e.clientX / innerWidth - 0.5;
+      ty = e.clientY / innerHeight - 0.5;
+    }, { passive: true });
+    stage.addEventListener("click", () => { spinVel = 16; });
+
+    function loop(now) {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      const t = now / 1000;
+      cx += (tx - cx) * Math.min(1, dt * 3);
+      cy += (ty - cy) * Math.min(1, dt * 3);
+      spinVel *= Math.exp(-dt * 2.2);
+      spin += dt * (calm ? 0.2 : 0.7) + spinVel * dt;
+
+      heart.rotation.set(cy * 0.5, spin + cx * 0.8, 0);
+      const p = (t % 1.25) / 1.25;
+      const beat = calm ? 0 : 0.07 * Math.exp(-((p - 0.08) ** 2) / 0.0016) + 0.045 * Math.exp(-((p - 0.27) ** 2) / 0.0016);
+      heart.scale.setScalar(1 + beat);
+      heart.position.y = Math.sin(t * 1.3) * 0.06;
+
+      orbit.rotation.y += dt * (0.55 + spinVel * 0.1);
+      minis.forEach((mini, i) => {
+        mini.rotation.y += dt * 2.4;
+        mini.position.y = Math.sin(t * 1.8 + i) * 0.14;
+      });
+      sparkles.rotation.y -= dt * 0.1;
+      sparkMat.opacity = 0.65 + Math.sin(t * 2.6) * 0.25;
+
+      renderer.render(scene, camera);
+      if (firstFrame) {
+        firstFrame = false;
+        stage.classList.add("ready");
+      }
+    }
+
+    loop(performance.now());
+
+    let visible = true;
+    function updateLoop() {
+      const run = visible && !document.hidden;
+      if (run) last = performance.now();
+      renderer.setAnimationLoop(run ? loop : null);
+    }
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      updateLoop();
+    }).observe(stage);
+    document.addEventListener("visibilitychange", updateLoop);
+  }
+
+  // Sferani Taubin yurak sirtiga "puflab" moslaymiz: (x²+9/4·y²+z²−1)³ − x²z³ − 9/80·y²z³ = 0
+  function heartGeometry() {
+    const sphere = new THREE.SphereGeometry(1, 160, 120);
+    const pos = sphere.attributes.position;
+    const dir = new THREE.Vector3();
+    const surface = (x, depth, up) => {
+      const a = x * x + 2.25 * depth * depth + up * up - 1;
+      return a * a * a - x * x * up * up * up - 0.1125 * depth * depth * up * up * up;
+    };
+    for (let i = 0; i < pos.count; i++) {
+      dir.fromBufferAttribute(pos, i).normalize();
+      let lo = 0;
+      let hi = 1.6;
+      for (let k = 0; k < 28; k++) {
+        const mid = (lo + hi) / 2;
+        if (surface(dir.x * mid, dir.z * mid, dir.y * mid) < 0) lo = mid;
+        else hi = mid;
+      }
+      const r = (lo + hi) / 2;
+      pos.setXYZ(i, dir.x * r, dir.y * r, dir.z * r);
+    }
+    sphere.deleteAttribute("normal");
+    sphere.deleteAttribute("uv");
+    const g = mergeVertices(sphere, 1e-5);
+    g.computeVertexNormals();
+    g.center();
+    g.scale(1.2, 1.2, 1.2);
+    return g;
+  }
+
+  function glowTexture() {
+    const c = document.createElement("canvas");
+    c.width = c.height = 64;
+    const ctx = c.getContext("2d");
+    const grd = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grd.addColorStop(0, "rgba(255,255,255,1)");
+    grd.addColorStop(0.3, "rgba(255,220,240,0.8)");
+    grd.addColorStop(1, "rgba(255,200,230,0)");
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 64, 64);
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }
+</script>
+
+</body>
+</html>
